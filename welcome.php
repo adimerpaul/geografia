@@ -15,7 +15,7 @@
             <div class="box">
                 <div class="box-body no-padding">
                     <div class="text-right" style="padding: 10px;">
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-default">
+                        <button type="button" class="btn btn-success" id="nuevo">
                             <i class="fa fa-plus"></i> Agregar
                         </button>
                     </div>
@@ -91,10 +91,19 @@
 <script>
     window.onload = function () {
         $('#modal-default').on('shown.bs.modal', function () {
-            $('#descripcion').val('');
-            $('#prioridad').val('0');
-
             map.invalidateSize();
+        });
+        idlugar = 0;
+        $('#nuevo').click(function () {
+            $('#descripcion').val('');
+            $('#prioridad').val(0);
+            $('#tipo').val('CINFA');
+            orurolat = -17.964888;
+            orurolng = -67.115827;
+            marker.setLatLng([orurolat, orurolng]);
+            map.setView([orurolat, orurolng], 13);
+            idlugar = 0;
+            $('#modal-default').modal('show');
         });
         var orurolat = -17.964888;
         var orurolng = -67.115827;
@@ -111,22 +120,44 @@
             marker.setLatLng(e.latlng);
         });
         $('#guardar').click(function () {
-            $.ajax({
-                url: 'api.php',
-                type: 'POST',
-                data: {
-                    method: 'lugarPost',
-                    descripcion: $('#descripcion').val(),
-                    prioridad: $('#prioridad').val(),
-                    tipo: $('#tipo').val(),
-                    lat: orurolat,
-                    lng: orurolng
-                },
-                success: function (response) {
-                    lugarGet();
-                    $('#modal-default').modal('hide');
-                }
-            });
+            console.log(idlugar);
+            if (idlugar === 0) {
+                $.ajax({
+                    url: 'api.php',
+                    type: 'POST',
+                    data: {
+                        method: 'lugarPost',
+                        descripcion: $('#descripcion').val(),
+                        prioridad: $('#prioridad').val(),
+                        tipo: $('#tipo').val(),
+                        lat: orurolat,
+                        lng: orurolng
+                    },
+                    success: function (response) {
+                        lugarGet();
+                        $('#modal-default').modal('hide');
+                    }
+                });
+
+            }else{
+                $.ajax({
+                    url: 'api.php',
+                    type: 'POST',
+                    data: {
+                        method: 'lugarPut',
+                        descripcion: $('#descripcion').val(),
+                        prioridad: $('#prioridad').val(),
+                        tipo: $('#tipo').val(),
+                        lat: orurolat,
+                        lng: orurolng,
+                        id: idlugar
+                    },
+                    success: function (response) {
+                        lugarGet();
+                        $('#modal-default').modal('hide');
+                    }
+                });
+            }
         });
         //que reconosco elimnar lugar
         window.lugarDelete = function (id) {
@@ -142,6 +173,29 @@
                 },
                 success: function (response) {
                     lugarGet();
+                }
+            });
+        }
+        window.lugarEdit = function (id) {
+            idlugar = id;
+            console.log(id);
+            $.ajax({
+                url: 'api.php',
+                type: 'GET',
+                data: {
+                    method: 'lugarGet',
+                    id: id
+                },
+                success: function (response) {
+                    var lugar = JSON.parse(response);
+                    $('#descripcion').val(lugar.descripcion);
+                    $('#prioridad').val(lugar.prioridad);
+                    $('#tipo').val(lugar.tipo);
+                    orurolat = lugar.latitud;
+                    orurolng = lugar.longitud;
+                    marker.setLatLng([orurolat, orurolng]);
+                    map.setView([orurolat, orurolng], 13);
+                    $('#modal-default').modal('show');
                 }
             });
         }
