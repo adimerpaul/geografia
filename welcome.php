@@ -30,21 +30,9 @@
                                 <th style="width: 40px">Ubicación</th>
                             </tr>
                         </thead>
-                        <tr>
-                            <td>
-                                <a href="editar_lugar.php" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></a>
-                                <a href="eliminar_lugar.php" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
-                            </td>
-                            <td>1.</td>
-                            <td>Desripcion</td>
-                            <td>Destion</td>
-                            <td>CINFA</td>
-                            <td>
-                                <a href="https://www.google.com/maps/place/14.634915,-90.506882" target="_blank">
-                                    <i class="fa fa-map"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        <tbody id="lugares">
+
+                        </tbody>
                     </table>
                     <div class="modal fade" id="modal-default">
                         <div class="modal-dialog">
@@ -103,6 +91,9 @@
 <script>
     window.onload = function () {
         $('#modal-default').on('shown.bs.modal', function () {
+            $('#descripcion').val('');
+            $('#prioridad').val('0');
+
             map.invalidateSize();
         });
         var orurolat = -17.964888;
@@ -120,7 +111,64 @@
             marker.setLatLng(e.latlng);
         });
         $('#guardar').click(function () {
-            console.log(orurolat, orurolng);
+            $.ajax({
+                url: 'api.php',
+                type: 'POST',
+                data: {
+                    method: 'lugarPost',
+                    descripcion: $('#descripcion').val(),
+                    prioridad: $('#prioridad').val(),
+                    tipo: $('#tipo').val(),
+                    lat: orurolat,
+                    lng: orurolng
+                },
+                success: function (response) {
+                    lugarGet();
+                    $('#modal-default').modal('hide');
+                }
+            });
         });
+        //que reconosco elimnar lugar
+        window.lugarDelete = function (id) {
+            if (!confirm('¿Está seguro de eliminar el lugar?')) {
+                return false;
+            }
+            $.ajax({
+                url: 'api.php',
+                type: 'POST',
+                data: {
+                    method: 'lugarDelete',
+                    id: id
+                },
+                success: function (response) {
+                    lugarGet();
+                }
+            });
+        }
+        lugarGet();
+        function lugarGet() {
+            $.ajax({
+                url: 'api.php',
+                type: 'GET',
+                data: {
+                    method: 'lugareGet'
+                },
+                success: function (response) {
+                    var lugares = JSON.parse(response);
+                    var html = '';
+                    for (var i = 0; i < lugares.length; i++) {
+                        html += '<tr>';
+                        html += '<td><button type="button" class="btn btn-primary btn-xs" onclick="lugarEdit(' + lugares[i].id + ')"><i class="fa fa-edit"></i></button> <button type="button" class="btn btn-danger btn-xs" onclick="lugarDelete(' + lugares[i].id + ')"><i class="fa fa-trash"></i></button></td>';
+                        html += '<td>' + lugares[i].id + '</td>';
+                        html += '<td>' + lugares[i].descripcion + '</td>';
+                        html += '<td>' + (lugares[i].prioridad == 0 ? 'Destino' : 'Origen') + '</td>';
+                        html += '<td>' + lugares[i].tipo + '</td>';
+                        html += '<td><a href="https://www.google.com/maps/search/?api=1&query=' + lugares[i].latitud + ',' + lugares[i].longitud + '" target="_blank"><i class="fa fa-map-marker"></i></a></td>';
+                        html += '</tr>';
+                    }
+                    $('#lugares').html(html);
+                }
+            });
+        }
     }
 </script>
