@@ -109,7 +109,7 @@ if (!isset($_SESSION['username'])) {
                     </a>
                 </li>
                 <li>
-                    <a href="cerrar.php">
+                    <a href="salir.php">
                         <i class="fa fa-sign-out"></i> <span>Cerrar Sesión</span>
                     </a>
                 </li>

@@ -62,3 +62,63 @@ if ($method == 'lugarDelete') {
         echo "Error: " . $sql . "<br>" . $conexion->error;
     }
 }
+
+if ($method == 'brigadasGet') {
+    $sql = "SELECT * FROM brigada";
+    $result = $conexion->query($sql);
+    $brigadas = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $brigadas[] = $row;
+        }
+    }
+    echo json_encode($brigadas);
+}
+if ($method == 'brigadaGet') {
+    $id = $_REQUEST['id'];
+    $sql = "SELECT * FROM brigada WHERE id = $id";
+    $result = $conexion->query($sql);
+    $brigada = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $brigada = $row;
+        }
+    }
+    echo json_encode($brigada);
+}
+if ($method == 'brigadaPost') {
+    $tipo = $_POST['tipo'];
+    $descripcion = $_POST['descripcion'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
+    $sql = "INSERT INTO brigada (tipo,descripcion,username,password,role) VALUES ('$tipo','$descripcion','$username','$password','$role')";
+    if ($conexion->query($sql) === TRUE) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conexion->error;
+    }
+}
+if ($method == 'brigadaPut') {
+    $id = $_POST['id'];
+    $tipo = $_POST['tipo'];
+    $descripcion = $_POST['descripcion'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
+    $sql = "UPDATE brigada SET tipo = '$tipo', descripcion = '$descripcion', username = '$username', password = '$password', role = '$role' WHERE id = $id";
+    if ($conexion->query($sql) === TRUE) {
+        echo "Record updated successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conexion->error;
+    }
+}
+if ($method == 'brigadaDelete') {
+    $id = $_POST['id'];
+    $sql = "DELETE FROM brigada WHERE id = $id";
+    if ($conexion->query($sql) === TRUE) {
+        echo "Record deleted successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conexion->error;
+    }
+}
