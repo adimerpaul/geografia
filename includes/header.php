@@ -41,9 +41,7 @@ if (!isset($_SESSION['username'])) {
 
     <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
     <link rel="stylesheet" href="leaflet_routing_machine/dist/leaflet-routing-machine.css" />
-    <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
     <script src="leaflet_routing_machine/examples/Control.Geocoder.js"></script>
-    <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
