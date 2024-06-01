@@ -64,7 +64,9 @@ if (!isset($_SESSION['username'])) {
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="salir.php"><i class="fa fa-sign-out"></i> Salir</a>
+                        <a href="salir.php" onclick="return confirm('¿Estás seguro de cerrar sesión?');">
+                            <i class="fa fa-sign-out"></i> Salir
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -111,7 +113,7 @@ if (!isset($_SESSION['username'])) {
                     </a>
                 </li>
                 <li>
-                    <a href="salir.php">
+                    <a href="salir.php" onclick="return confirm('¿Estás seguro de cerrar sesión?');">
                         <i class="fa fa-sign-out"></i> <span>Cerrar Sesión</span>
                     </a>
                 </li>
