@@ -39,11 +39,11 @@ if (!isset($_SESSION['username'])) {
     <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script src="leaflet-routing-machine-3.2.12/dist/leaflet-routing-machine.js"></script>
-    <link rel="stylesheet" href="leaflet-routing-machine-3.2.12/dist/leaflet-routing-machine.css" />
-    <script src="leaflet-routing-machine-3.2.12/dist/leaflet-routing-machine.js"></script>
-    <script src="leaflet-routing-machine-3.2.12/examples/Control.Geocoder.js"></script>
-    <script src="leaflet-routing-machine-3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="leaflet_routing_machine/dist/leaflet-routing-machine.css" />
+    <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
+    <script src="leaflet_routing_machine/examples/Control.Geocoder.js"></script>
+    <script src="leaflet_routing_machine/dist/leaflet-routing-machine.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
