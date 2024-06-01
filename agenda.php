@@ -45,9 +45,10 @@
                                     <form class="form-horizontal">
                                         <div class="box-body">
                                             <div class="form-group">
-                                                <label for="descripcion" class="col-sm-2 control-label">Descripcion</label>
+                                                <label for="brigada" class="col-sm-2 control-label">Brigadas</label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" class="form-control" id="descripcion" placeholder="Descripcion">
+                                                    <select class="form-control" id="brigada">
+                                                    </select>
                                                 </div>
                                                 <label for="tipo" class="col-sm-2 control-label">Tipo</label>
                                                 <div class="col-sm-4">
@@ -190,6 +191,7 @@
             });
         }
         brigadaGet();
+        entidadesGet();
         function brigadaGet() {
             $.ajax({
                 url: 'api.php',
@@ -201,36 +203,9 @@
                     var brigadaes = JSON.parse(response);
                     var html = '';
                     for (var i = 0; i < brigadaes.length; i++) {
-
-                        if (brigadaes[i].tipo == 'MANTENIMIENTO') {
-                            tipo= '<span class="badge bg-red">MANTENIMIENTO</span>';
-                        } else if (brigadaes[i].tipo == 'SUPERVISOR') {
-                            tipo= '<span class="badge bg-green">SUPERVISOR</span>';
-                        } else if (brigadaes[i].tipo == 'CONSULTOR MOVIL') {
-                            tipo= '<span class="badge bg-blue">CONSULTOR MOVIL</span>';
-                        } else if (brigadaes[i].tipo == 'VACUNAS') {
-                            tipo= '<span class="badge bg-yellow">VACUNAS</span>';
-                        } else if (brigadaes[i].tipo == 'ADMIN') {
-                            tipo= '<span class="badge bg-purple">ADMIN</span>';
-                        }
-
-                        //role
-                        if (brigadaes[i].role == 'ADMIN') {
-                            role= '<span class="badge bg-red">ADMIN</span>';
-                        } else if (brigadaes[i].role == 'BRIGADA') {
-                            role= '<span class="badge bg-green">BRIGADA</span>';
-                        }
-
-                        html += '<tr>';
-                        html += '<td><button type="button" class="btn btn-primary btn-xs" onclick="brigadaEdit(' + brigadaes[i].id + ')"><i class="fa fa-edit"></i></button> <button type="button" class="btn btn-danger btn-xs" onclick="brigadaDelete(' + brigadaes[i].id + ')"><i class="fa fa-trash"></i></button></td>';
-                        html += '<td>' + brigadaes[i].id + '</td>';
-                        html += '<td>' + tipo + '</td>';
-                        html += '<td>' + brigadaes[i].descripcion + '</td>';
-                        html += '<td>' + brigadaes[i].username + '</td>';
-                        html += '<td>' + role + '</td>';
-                        html += '</tr>';
+                        html += '<option value="' + brigadaes[i].id + '">' + brigadaes[i].descripcion + '</option>';
                     }
-                    $('#brigadaes').html(html);
+                    $('#brigada').html(html);
                 }
             });
         }
