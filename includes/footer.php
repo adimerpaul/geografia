@@ -28,6 +28,8 @@
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
 <!-- Make sure you put this AFTER Leaflet's CSS -->
+//moment
+<script src="bower_components/moment/min/moment.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.sidebar-menu').tree()

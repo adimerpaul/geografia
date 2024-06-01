@@ -77,6 +77,25 @@ if ($method == 'agendaDelete') {
         echo "Error: " . $sql . "<br>" . $conexion->error;
     }
 }
+if ($method == 'agendaSearch') {
+    $brigada = $_REQUEST['id'];
+    $fecha = $_REQUEST['fecha'];
+    $sql = "SELECT * FROM agenda WHERE idbrigada = $brigada AND fecha_agenda = '$fecha'";
+    $result = $conexion->query($sql);
+    $agenda = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $row['brigada'] = $conexion->query("SELECT * FROM brigada WHERE id = ".$row['idbrigada'])->fetch_assoc();
+            $row['rutas'] = array();
+            $rutas = $conexion->query("SELECT * FROM ruta WHERE idagenda = ".$row['id']);
+            while($ruta = $rutas->fetch_assoc()) {
+                $row['rutas'][] = $conexion->query("SELECT * FROM entidad WHERE id = ".$ruta['identidad'])->fetch_assoc();
+            }
+            $agenda = $row;
+        }
+    }
+    echo json_encode($agenda);
+}
 if ($method == 'lugareGet') {
     $sql = "SELECT * FROM entidad";
     $result = $conexion->query($sql);
