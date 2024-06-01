@@ -2,7 +2,7 @@
 include 'config.php';
 
 $method= $_REQUEST['method'];
-if ($method == 'agendaGet') {
+if ($method == 'agendasGet') {
     $sql = "SELECT * FROM agenda";
     $result = $conexion->query($sql);
     $agenda = array();
@@ -15,6 +15,24 @@ if ($method == 'agendaGet') {
                 $row['rutas'][] = $conexion->query("SELECT * FROM entidad WHERE id = ".$ruta['identidad'])->fetch_assoc();
             }
             $agenda[] = $row;
+        }
+    }
+    echo json_encode($agenda);
+}
+if ($method == 'agendaGet') {
+    $id = $_REQUEST['id'];
+    $sql = "SELECT * FROM agenda WHERE id = $id";
+    $result = $conexion->query($sql);
+    $agenda = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $row['brigada'] = $conexion->query("SELECT * FROM brigada WHERE id = ".$row['idbrigada'])->fetch_assoc();
+            $row['rutas'] = array();
+            $rutas = $conexion->query("SELECT * FROM ruta WHERE idagenda = ".$row['id']);
+            while($ruta = $rutas->fetch_assoc()) {
+                $row['rutas'][] = $conexion->query("SELECT * FROM entidad WHERE id = ".$ruta['identidad'])->fetch_assoc();
+            }
+            $agenda = $row;
         }
     }
     echo json_encode($agenda);
@@ -34,6 +52,15 @@ if ($method == 'agendaPost') {
         $conexion->query($sql);
     }
     echo json_encode(array('status' => 'ok'));
+}
+if ($method == 'agendaDelete') {
+    $id = $_POST['id'];
+    $sql = "DELETE FROM agenda WHERE id = $id";
+    if ($conexion->query($sql) === TRUE) {
+        echo "Record deleted successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conexion->error;
+    }
 }
 if ($method == 'lugareGet') {
     $sql = "SELECT * FROM entidad";

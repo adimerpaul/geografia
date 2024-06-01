@@ -104,7 +104,6 @@
                 alert('La fecha es requerida');
                 return false;
             }
-            console.log($('#brigada').val());
             if ($('#brigada').val() == '' || $('#brigada').val() == null) {
                 alert('La brigada es requerida');
                 return false;
@@ -113,7 +112,7 @@
                 alert('El lugar es requerido');
                 return false;
             }
-
+            console.log($('#lugares').val());
             if (idbrigada === 0) {
                 $.ajax({
                     url: 'api.php',
@@ -126,7 +125,7 @@
                         observacion: $('#observacion').val()
                     },
                     success: function (response) {
-                        brigadaGet();
+                        agendaGet();
                         $('#modal-default').modal('hide');
                     }
                 });
@@ -160,11 +159,11 @@
                 url: 'api.php',
                 type: 'POST',
                 data: {
-                    method: 'brigadaDelete',
+                    method: 'agendaDelete',
                     id: id
                 },
                 success: function (response) {
-                    brigadaGet();
+                    agendaGet();
                 }
             });
         }
@@ -174,16 +173,18 @@
                 url: 'api.php',
                 type: 'GET',
                 data: {
-                    method: 'brigadaGet',
+                    method: 'agendaGet',
                     id: id
                 },
                 success: function (response) {
                     var brigada = JSON.parse(response);
-                    $('#tipo').val(brigada.tipo);
-                    $('#descripcion').val(brigada.descripcion);
-                    $('#username').val(brigada.username);
-                    $('#password').val(brigada.password);
-                    $('#role').val(brigada.role);
+                    $('#fecha').val(brigada.fecha_agenda);
+                    $('#brigada').val(brigada.brigada.id);
+                    $('#observacion').val(brigada.observacion);
+                    $('#lugares').val(brigada.rutas.map(function (item) {
+                        return item.id;
+                    }));
+                    $('.select2').select2();
                     $('#modal-default').modal('show');
                 }
             });
@@ -196,7 +197,7 @@
                 url: 'api.php',
                 type: 'GET',
                 data: {
-                    method: 'agendaGet'
+                    method: 'agendasGet'
                 },
                 success: function (response) {
                     var agendaes = JSON.parse(response);
