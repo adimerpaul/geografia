@@ -2,7 +2,32 @@
 include 'config.php';
 
 $method= $_REQUEST['method'];
+if ($method == 'agendaGet') {
+    $sql = "SELECT * FROM agenda";
+    $result = $conexion->query($sql);
+    $agenda = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $agenda[] = $row;
+        }
+    }
+    echo json_encode($agenda);
+}
+if ($method == 'agendaPost') {
+    $brigada = $_POST['brigada'];
 
+    $fecha_agenda = $_POST['fecha'];
+    $observacion = $_POST['observacion'];
+    $fecha_registro = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO agenda (idbrigada,fecha_registro,fecha_agenda,observacion) VALUES ('$brigada','$fecha_registro','$fecha_agenda','$observacion')";
+    $lugares = $_POST['lugares'];
+
+    if ($conexion->query($sql) === TRUE) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conexion->error;
+    }
+}
 if ($method == 'lugareGet') {
     $sql = "SELECT * FROM entidad";
     $result = $conexion->query($sql);

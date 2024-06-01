@@ -36,10 +36,10 @@
                     <div class="modal fade" id="modal-default">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-green">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Nuevo Brigada</h4>
+                                    <h4 class="modal-title">Nuevo Agenda</h4>
                                 </div>
                                 <div class="modal-body">
                                     <form class="form-horizontal">
@@ -50,34 +50,20 @@
                                                     <select class="form-control" id="brigada">
                                                     </select>
                                                 </div>
-                                                <label for="tipo" class="col-sm-2 control-label">Tipo</label>
+                                                <label for="lugares" class="col-sm-2 control-label">Lugares</label>
                                                 <div class="col-sm-4">
-                                                    <select class="form-control" id="tipo">
-                                                        <option value="MANTENIMIENTO">MANTENIMIENTO</option>
-                                                        <option value="SUPERVISOR">SUPERVISOR</option>
-                                                        <option value="CONSULTOR MOVIL">CONSULTOR MOVIL</option>
-                                                        <option value="VACUNAS">VACUNAS</option>
-                                                        <option value="ADMIN">ADMIN</option>
+                                                    <select class="form-control select2" multiple="multiple" data-placeholder="Selecionar lugares" id="lugares" style="width: 100%;">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="username" class="col-sm-2 control-label">Username</label>
+                                                <label for="fecha" class="col-sm-2 control-label">Fecha</label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" class="form-control" id="username" placeholder="Username">
+                                                    <input type="date" class="form-control" id="fecha" placeholder="Fecha">
                                                 </div>
-                                                <label for="password" class="col-sm-2 control-label">Password</label>
+                                                <label for="observacion" class="col-sm-2 control-label">Observacion</label>
                                                 <div class="col-sm-4">
-                                                    <input type="password" class="form-control" id="password" placeholder="Password">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="role" class="col-sm-2 control-label">Role</label>
-                                                <div class="col-sm-4">
-                                                    <select class="form-control" id="role">
-                                                        <option value="ADMIN">ADMIN</option>
-                                                        <option value="BRIGADA">BRIGADA</option>
-                                                    </select>
+                                                    <input class="form-control" id="observacion" placeholder="Observacion">
                                                 </div>
                                             </div>
                                         </div>
@@ -99,33 +85,45 @@
 <?php include 'includes/footer.php'; ?>
 <script>
     window.onload = function () {
+        $('.select2').select2();
         $('#modal-default').on('shown.bs.modal', function () {
             // map.invalidateSize();
         });
         idbrigada = 0;
         $('#nuevo').click(function () {
-            $('#tipo').val('MANTENIMIENTO');
-            $('#descripcion').val('');
-            $('#username').val('');
-            $('#password').val('');
-            $('#role').val('BRIGADA');
+            $('#fecha').val();
+            $('#brigada').val('');
+            $('#lugares').val('');
+            $('#observacion').val('');
             idbrigada = 0;
             $('#modal-default').modal('show');
         });
 
         $('#guardar').click(function () {
-            console.log(idbrigada);
+            if ($('#fecha').val() == '' || $('#fecha').val() == null) {
+                alert('La fecha es requerida');
+                return false;
+            }
+            console.log($('#brigada').val());
+            if ($('#brigada').val() == '' || $('#brigada').val() == null) {
+                alert('La brigada es requerida');
+                return false;
+            }
+            if ($('#lugares').val() == '' || $('#lugares').val() == null) {
+                alert('El lugar es requerido');
+                return false;
+            }
+
             if (idbrigada === 0) {
                 $.ajax({
                     url: 'api.php',
                     type: 'POST',
                     data: {
-                        method: 'brigadaPost',
-                        tipo: $('#tipo').val(),
-                        descripcion: $('#descripcion').val(),
-                        username: $('#username').val(),
-                        password: $('#password').val(),
-                        role: $('#role').val()
+                        method: 'agendaPost',
+                        brigada: $('#brigada').val(),
+                        lugares: $('#lugares').val(),
+                        fecha: $('#fecha').val(),
+                        observacion: $('#observacion').val()
                     },
                     success: function (response) {
                         brigadaGet();
@@ -206,6 +204,23 @@
                         html += '<option value="' + brigadaes[i].id + '">' + brigadaes[i].descripcion + '</option>';
                     }
                     $('#brigada').html(html);
+                }
+            });
+        }
+        function entidadesGet() {
+            $.ajax({
+                url: 'api.php',
+                type: 'GET',
+                data: {
+                    method: 'lugareGet'
+                },
+                success: function (response) {
+                    var entidades = JSON.parse(response);
+                    var html = '';
+                    for (var i = 0; i < entidades.length; i++) {
+                        html += '<option value="' + entidades[i].id + '">' + entidades[i].descripcion + '</option>';
+                    }
+                    $('#lugares').html(html);
                 }
             });
         }
