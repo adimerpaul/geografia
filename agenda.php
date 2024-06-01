@@ -30,7 +30,7 @@
                                 <th>Observacion</th>
                             </tr>
                         </thead>
-                        <tbody id="brigadaes">
+                        <tbody id="agendas">
                         </tbody>
                     </table>
                     <div class="modal fade" id="modal-default">
@@ -190,6 +190,42 @@
         }
         brigadaGet();
         entidadesGet();
+        agendaGet();
+        function agendaGet() {
+            $.ajax({
+                url: 'api.php',
+                type: 'GET',
+                data: {
+                    method: 'agendaGet'
+                },
+                success: function (response) {
+                    var agendaes = JSON.parse(response);
+                    console.log(agendaes);
+                    var html = '';
+                    for (var i = 0; i < agendaes.length; i++) {
+
+                        const rutas = agendaes[i].rutas;
+                        let textLugares = '';
+                        if(rutas.length > 0){
+                            for (let j = 0; j < rutas.length; j++) {
+                                textLugares += rutas[j].descripcion + ', ';
+                            }
+                            textLugares = textLugares.substring(0, textLugares.length - 2);
+                        }
+
+                        html += '<tr>';
+                        html += '<td><button type="button" class="btn btn-warning btn-xs" onclick="brigadaEdit(' + agendaes[i].id + ')"><i class="fa fa-edit"></i></button> <button type="button" class="btn btn-danger btn-xs" onclick="brigadaDelete(' + agendaes[i].id + ')"><i class="fa fa-trash"></i></button></td>';
+                        html += '<td>' + agendaes[i].id + '</td>';
+                        html += '<td>' + agendaes[i].brigada?.descripcion + '</td>';
+                        html += '<td>' + textLugares + '</td>';
+                        html += '<td>' + agendaes[i].fecha_agenda + '</td>';
+                        html += '<td>' + agendaes[i].observacion + '</td>';
+                        html += '</tr>';
+                    }
+                    $('#agendas').html(html);
+                }
+            });
+        }
         function brigadaGet() {
             $.ajax({
                 url: 'api.php',

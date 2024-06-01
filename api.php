@@ -8,6 +8,12 @@ if ($method == 'agendaGet') {
     $agenda = array();
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
+            $row['brigada'] = $conexion->query("SELECT * FROM brigada WHERE id = ".$row['idbrigada'])->fetch_assoc();
+            $row['rutas'] = array();
+            $rutas = $conexion->query("SELECT * FROM ruta WHERE idagenda = ".$row['id']);
+            while($ruta = $rutas->fetch_assoc()) {
+                $row['rutas'][] = $conexion->query("SELECT * FROM entidad WHERE id = ".$ruta['identidad'])->fetch_assoc();
+            }
             $agenda[] = $row;
         }
     }
