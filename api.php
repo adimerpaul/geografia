@@ -53,6 +53,21 @@ if ($method == 'agendaPost') {
     }
     echo json_encode(array('status' => 'ok'));
 }
+if ($method == 'agendaPut') {
+    $id = $_POST['id'];
+    $brigada = $_POST['brigada'];
+    $fecha_agenda = $_POST['fecha'];
+    $observacion = $_POST['observacion'];
+    $sql = "UPDATE agenda SET idbrigada = '$brigada', fecha_agenda = '$fecha_agenda', observacion = '$observacion' WHERE id = $id";
+    $conexion->query($sql);
+    $lugares = $_POST['lugares'];
+    $conexion->query("DELETE FROM ruta WHERE idagenda = $id");
+    foreach ($lugares as $lugar) {
+        $sql = "INSERT INTO ruta (idagenda,identidad) VALUES ('$id','$lugar')";
+        $conexion->query($sql);
+    }
+    echo json_encode(array('status' => 'ok'));
+}
 if ($method == 'agendaDelete') {
     $id = $_POST['id'];
     $sql = "DELETE FROM agenda WHERE id = $id";

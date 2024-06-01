@@ -135,16 +135,15 @@
                     url: 'api.php',
                     type: 'POST',
                     data: {
-                        method: 'brigadaPut',
-                        tipo: $('#tipo').val(),
-                        descripcion: $('#descripcion').val(),
-                        username: $('#username').val(),
-                        password: $('#password').val(),
-                        role: $('#role').val(),
+                        method: 'agendaPut',
+                        brigada: $('#brigada').val(),
+                        lugares: $('#lugares').val(),
+                        fecha: $('#fecha').val(),
+                        observacion: $('#observacion').val(),
                         id: idbrigada
                     },
                     success: function (response) {
-                        brigadaGet();
+                        agendaGet();
                         $('#modal-default').modal('hide');
                     }
                 });
