@@ -20,13 +20,14 @@ if ($method == 'agendaPost') {
     $observacion = $_POST['observacion'];
     $fecha_registro = date('Y-m-d H:i:s');
     $sql = "INSERT INTO agenda (idbrigada,fecha_registro,fecha_agenda,observacion) VALUES ('$brigada','$fecha_registro','$fecha_agenda','$observacion')";
+    $conexion->query($sql);
     $lugares = $_POST['lugares'];
-
-    if ($conexion->query($sql) === TRUE) {
-        echo "New record created successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . $conexion->error;
+    $idAgenda = $conexion->insert_id;
+    foreach ($lugares as $lugar) {
+        $sql = "INSERT INTO ruta (idagenda,identidad) VALUES ('$idAgenda','$lugar')";
+        $conexion->query($sql);
     }
+    echo json_encode(array('status' => 'ok'));
 }
 if ($method == 'lugareGet') {
     $sql = "SELECT * FROM entidad";
