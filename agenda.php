@@ -91,9 +91,9 @@
         });
         idbrigada = 0;
         $('#nuevo').click(function () {
-            $('#fecha').val();
+            $('#fecha').val('');
             $('#brigada').val('');
-            $('#lugares').val('');
+            entidadesGet();
             $('#observacion').val('');
             idbrigada = 0;
             $('#modal-default').modal('show');
