@@ -59,7 +59,7 @@
 <script>
 window.onload = function () {
     $('#fecha').val(moment().format('YYYY-MM-DD'));
-    const map = L.map('map').fitWorld();
+    const map = L.map('map');
 
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -67,6 +67,9 @@ window.onload = function () {
     }).addTo(map);
 
     map.setView([-17.9600, -67.1200], 13);
+
+
+
     brigadasGet();
     function brigadasGet() {
         $.ajax({
@@ -83,17 +86,23 @@ window.onload = function () {
             }
         });
     }
+    var routingControl; // Variable global para almacenar el control de la ruta
+
     $('#search').click(function () {
         const brigada = $('#brigadas').val();
         const fecha = $('#fecha').val();
-        if (brigada == '') {
+
+        // Verificación de entradas
+        if (brigada === '') {
             alert('Seleccione una brigada');
             return;
         }
-        if (fecha == '') {
+        if (fecha === '') {
             alert('Seleccione una fecha');
             return;
         }
+
+        // Solicitud AJAX
         $.ajax({
             url: 'api.php',
             method: 'GET',
@@ -104,25 +113,61 @@ window.onload = function () {
             },
             success: function (response) {
                 const result = JSON.parse(response);
+
+                // Eliminar el control de la ruta anterior si existe
+                if (routingControl) {
+                    map.removeControl(routingControl);
+                }
+
+                // Eliminar todos los marcadores y polilíneas del mapa
                 map.eachLayer(function (layer) {
-                    if (layer instanceof L.Marker) {
+                    if (layer instanceof L.Marker || layer instanceof L.Polyline) {
                         map.removeLayer(layer);
                     }
                 });
-                if (result.length == 0) {
+
+                // Manejo de respuesta vacía
+                if (result.length === 0) {
                     alert('No se encontraron rutas');
                     return;
                 }
+
                 $('#observacion').val(result.observacion);
                 console.log(result);
+
+                const waypoints = [];
                 result.rutas.forEach(function (ruta) {
-                    const marker = L.marker([parseFloat(ruta.latitud), parseFloat(ruta.longitud)]).addTo(map);
-                    marker.bindPopup(ruta.descripcion);
+                    const latLng = L.latLng(parseFloat(ruta.latitud), parseFloat(ruta.longitud));
+                    waypoints.push(latLng);
                 });
+
+                // Crear y agregar el control de la ruta
+                routingControl = L.Routing.control({
+                    waypoints: waypoints,
+                    draggableWaypoints: false,
+                }).addTo(map);
+
+                result.rutas.forEach(function (ruta) {
+                    const latLng = L.latLng(parseFloat(ruta.latitud), parseFloat(ruta.longitud));
+
+                    // como colocar al frnte
+                    const marker = L.marker(latLng).addTo(map);
+                    marker.bindPopup(ruta.descripcion);
+                    marker.on('mouseover', function () {
+                        marker.openPopup();
+                    });
+                    marker.on('click', function () {
+                        const googleMapsUrl = `https://www.google.com/maps?q=${latLng.lat},${latLng.lng}`;
+                        console.log(`Opening URL: ${googleMapsUrl}`); // Para depurar
+                        window.open(googleMapsUrl, '_blank');
+                    });
+                });
+
+                // Agregar control de errores para la ruta
+                L.Routing.errorControl(routingControl).addTo(map);
             }
         });
     });
-
 
     // function onLocationFound(e) {
     //     const radius = e.accuracy / 2;
